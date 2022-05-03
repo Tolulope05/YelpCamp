@@ -36,8 +36,9 @@ app.get('/campgrounds/:id', async (req, res) => {
     res.render('campgrounds/show', { campground });
 });
 
-
-
+app.get('/campgrounds/new', async (req, res) => {
+    res.render('campgrounds/new')
+});
 
 app.listen(port, () => {
     console.log(`Listening on port ${port}`)
