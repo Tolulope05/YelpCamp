@@ -16,10 +16,12 @@ db.once('open', () => {
 }); // logic to check if there is an error & successfully opened
 
 const app = express();
+const port = 3000;
 
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
-const port = 3000;
+app.use(express.urlencoded({ extended: true })); //for post request.
+
 
 app.get('/', (req, res) => {
     res.render('home');
@@ -28,17 +30,29 @@ app.get('/', (req, res) => {
 app.get('/campgrounds', async (req, res) => {
     const campgrounds = await Campground.find({});
     res.render('campgrounds/index', { campgrounds })
-});
+}); //index page
+
+app.get('/campgrounds/new', (req, res) => {
+    res.render('campgrounds/new')
+}); //new page
+app.post('/campgrounds', async (req, res) => {
+    const campground = new Campground(req.body.campground);
+    await campground.save();
+    res.redirect(`campgrounds/${campground._id}`);
+})
 
 app.get('/campgrounds/:id', async (req, res) => {
     const id = req.params.id;
     const campground = await Campground.findById(id);
     res.render('campgrounds/show', { campground });
-});
+}); // show page
 
-app.get('/campgrounds/new', async (req, res) => {
-    res.render('campgrounds/new')
-});
+app.get('/campgrounds/:id/edit', async (req, res) => {
+    const campground = await Campground.findById(req.params.id);
+    res.render('campgrounds/edit', { campground });
+}) //update page
+
+
 
 app.listen(port, () => {
     console.log(`Listening on port ${port}`)
