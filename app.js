@@ -25,15 +25,18 @@ app.get('/', (req, res) => {
     res.render('home');
 });
 
-app.get('/makecampground', async (req, res) => {
-    const camp = new Campground({
-        title: 'My Backyard',
-        description: 'Cheap Campground around you!',
-        location: 'Edo State'
-    });
-    await camp.save();
-    res.send(camp);
+app.get('/campground', async (req, res) => {
+    const campgrounds = await Campground.find({});
+    res.render('campgrounds/index', { campgrounds })
 });
+
+app.get('/campground:id', async (req, res) => {
+    const campgrounds = await Campground.find({});
+    res.render('campgrounds/show', { campgrounds })
+});
+
+
+
 
 app.listen(port, () => {
     console.log(`Listening on port ${port}`)
