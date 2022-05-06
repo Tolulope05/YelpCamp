@@ -39,10 +39,15 @@ app.get('/campgrounds', async (req, res) => {
 app.get('/campgrounds/new', (req, res) => {
     res.render('campgrounds/new')
 }); //new page
-app.post('/campgrounds', async (req, res) => {
-    const campground = new Campground(req.body.campground);
-    await campground.save();
-    res.redirect(`/campgrounds/${campground._id}`);
+app.post('/campgrounds', async (req, res, next) => {
+    try {
+        const campground = new Campground(req.body.campground);
+        await campground.save();
+        res.redirect(`/campgrounds/${campground._id}`);
+    } catch (error) {
+        next(error)
+    }
+
 })
 
 app.get('/campgrounds/:id', async (req, res) => {
@@ -66,6 +71,11 @@ app.delete('/campgrounds/:id', async (req, res) => {
     const { id } = req.params;
     const campground = await Campground.findByIdAndDelete(id);
     res.redirect('/campgrounds')
+})
+
+/** ASYNC ERROR HANDLING */
+app.use((err, req, res, next) => {
+    res.send('Oh Boy, Somehing went wrong')
 })
 
 app.listen(port, () => {
