@@ -2,7 +2,7 @@ const express = require('express');
 const path = require('path');
 const mongoose = require('mongoose');
 const ejsMate = require('ejs-mate');
-const Joi = require('joi');
+const { campgroundSchema } = require('./schemas.js')
 const catchAsync = require('./utilities/catchAsync') //Asynchronous Error Handler 
 const ExpressError = require('./utilities/ExpressError') //Express Error Class
 const methodOverride = require('method-override');
@@ -30,15 +30,6 @@ app.use(express.urlencoded({ extended: true })); //for post request.
 app.use(methodOverride('_method'));
 
 const validateCampground = (req, res, next) => {
-    const campgroundSchema = Joi.object({
-        campground: Joi.object({
-            title: Joi.string().required(),
-            price: Joi.number().min(0).required(),
-            image: Joi.string().required(),
-            location: Joi.string().required(),
-            description: Joi.string().required()
-        }).required() // Validation on the Client side.
-    });
     const { error } = campgroundSchema.validate(req.body);
     if (error) {
         const msg = error.details.map(el => el.message).join(',')
@@ -80,7 +71,7 @@ app.get('/campgrounds/:id/edit', catchAsync(async (req, res) => {
     const campground = await Campground.findById(req.params.id);
     res.render('campgrounds/edit', { campground });
 })) //update page
-app.put('/campgrounds/:id', catchAsync(async (req, res) => {
+app.put('/campgrounds/:id', validateCampground, catchAsync(async (req, res) => {
     const { id } = req.params;
     const campground = await Campground.findByIdAndUpdate(id, { ...req.body.campground });
     res.redirect(`/campgrounds/${campground._id}`);
