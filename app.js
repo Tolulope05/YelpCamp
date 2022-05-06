@@ -48,6 +48,7 @@ app.post('/campgrounds', catchAsync(async (req, res, next) => {
     res.redirect(`/campgrounds/${campground._id}`);
 }))
 
+
 app.get('/campgrounds/:id', catchAsync(async (req, res) => {
     const { id } = req.params;
     const campground = await Campground.findById(id);
