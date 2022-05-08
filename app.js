@@ -105,6 +105,14 @@ app.post('/campgrounds/:id/reviews', validateReview, catchAsync(async (req, res)
     res.redirect(`/campgrounds/${campground._id}`);
 }))
 
+/**DELETING REVIEWS */
+app.delete('/campgrounds/:id/reviews/:review_id', catchAsync(async (req, res) => {
+    const { id, review_id } = req.params;
+    await Campground.findByIdAndUpdate(id, { $pull: { reviews: review_id } });
+    await Review.findByIdAndDelete(review_id)
+    res.redirect(`/campgrounds/${id}`);
+}))
+
 /** ASYNC ERROR HANDLING */
 
 app.all('*', (req, res, next) => {
