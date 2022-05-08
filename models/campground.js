@@ -15,5 +15,12 @@ const CampgroundSchema = new Schema({
         }
     ]
 });
+/**Campground Delete middleware */
+CampgroundSchema.post('findOneAndDelete', async function (doc) {
+    if (doc) {
+        await review.remove({ _id: { $in: doc.reviews } })
+    }
+})
+
 
 module.exports = mongoose.model('Campground', CampgroundSchema);
