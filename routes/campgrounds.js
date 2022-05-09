@@ -2,9 +2,10 @@ const express = require('express');
 const router = express.Router();
 const catchAsync = require('../utilities/catchAsync') //Asynchronous Error Handler 
 const ExpressError = require('../utilities/ExpressError') //Express Error Class
-const Campground = require('../models/campground');
-const { campgroundSchema } = require('../schemas.js')
 
+const Campground = require('../models/campground');
+
+const { campgroundSchema } = require('../schemas.js');
 
 const validateCampground = (req, res, next) => {
     const { error } = campgroundSchema.validate(req.body);
