@@ -29,6 +29,7 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 app.use(express.urlencoded({ extended: true })); //for post request.
 app.use(methodOverride('_method'));
+app.use(express.static(path.join(__dirname, 'public'))) //For serving static files like the pure script files
 
 
 
