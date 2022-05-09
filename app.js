@@ -2,7 +2,8 @@ const express = require('express');
 const path = require('path');
 const mongoose = require('mongoose');
 const ejsMate = require('ejs-mate');
-const ExpressError = require('./utilities/ExpressError') //Express Error Class
+const session = require('express-session');
+const ExpressError = require('./utilities/ExpressError'); //Express Error Class
 const methodOverride = require('method-override');
 
 /**ROUTES */
@@ -30,8 +31,17 @@ app.set('view engine', 'ejs');
 app.use(express.urlencoded({ extended: true })); //for post request.
 app.use(methodOverride('_method'));
 app.use(express.static(path.join(__dirname, 'public'))) //For serving static files like the pure script files
-
-
+const sessionConfig = {
+    secret: 'secretissecret',
+    resave: false,
+    saveUninitialized: true,
+    cookie: {
+        HttpOnly: true,
+        expires: Date.now() + 1000 * 60 * 60 * 24 * 7,
+        maxAge: 1000 * 60 * 60 * 24 * 7 // A week from now in milliseconds
+    }
+};
+app.use(session(sessionConfig));
 
 app.get('/', (req, res) => {
     res.render('home');
