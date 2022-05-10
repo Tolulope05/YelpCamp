@@ -6,6 +6,9 @@ const session = require('express-session');
 const flash = require('connect-flash');
 const ExpressError = require('./utilities/ExpressError'); //Express Error Class
 const methodOverride = require('method-override');
+const passport = require('passport');
+const LocalStrategy = require('passport-local');
+const User = require('./models/user')
 
 /**ROUTES */
 const campgrounds = require('./routes/campgrounds');
@@ -42,14 +45,31 @@ const sessionConfig = {
         maxAge: 1000 * 60 * 60 * 24 * 7 // A week from now in milliseconds
     }
 };
-app.use(session(sessionConfig));
-app.use(flash())
+
+app.use(session(sessionConfig)); // Always ensure session() is before passport.session()
+app.use(flash());
+
+app.use(passport.initialize());
+app.use(passport.session());
+passport.use(new LocalStrategy(User.authenticate()));
+
+passport.serializeUser(User.serializeUser()); // How do we store the user in the session
+passport.deserializeUser(User.deserializeUser()); // How do we get the user from the session
 
 app.use((req, res, next) => {
     res.locals.success = req.flash('success');
     res.locals.error = req.flash('error');
     next();
-})
+}); //This is a middleware that will be executed for every request.
+
+app.get('/fakeUser', async (req, res) => {
+    const user = new User({
+        email: 'fakunletolulope05@gmail.com',
+        username: 'TFakunle'
+    })
+    const newUser = await User.register(user, 'chicken'); //password is chicken
+    res.send(newUser);
+}); // 
 
 app.use('/campgrounds', campgrounds)
 app.use('/campgrounds/:id/reviews', reviews)
