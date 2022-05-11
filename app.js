@@ -61,7 +61,7 @@ app.use((req, res, next) => {
     res.locals.success = req.flash('success');
     res.locals.error = req.flash('error');
     next();
-}); //This is a middleware that will be executed for every request.
+}); // This is a middleware that will be executed for every request.
 
 app.use('/', userRoutes);
 app.use('/campgrounds', campgroundRoutes);
