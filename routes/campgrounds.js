@@ -4,7 +4,6 @@ const catchAsync = require('../utilities/catchAsync') //Asynchronous Error Handl
 const { isLoggedIn, isAuthor, validateCampground } = require('../middleware'); //Middleware
 const Campground = require('../models/campground');
 
-
 router.get('/', catchAsync(async (req, res) => {
     const campgrounds = await Campground.find({});
     res.render('campgrounds/index', { campgrounds })
