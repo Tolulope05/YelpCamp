@@ -58,6 +58,7 @@ passport.serializeUser(User.serializeUser()); // How do we store the user in the
 passport.deserializeUser(User.deserializeUser()); // How do we get the user from the session
 
 app.use((req, res, next) => {
+    res.locals.currentUser = req.user;
     res.locals.success = req.flash('success');
     res.locals.error = req.flash('error');
     next();

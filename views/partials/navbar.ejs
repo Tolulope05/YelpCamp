@@ -20,15 +20,22 @@
                 </li>
             </ul>
             <ul class="navbar-nav ms-auto">
+                <% if (!currentUser) { %>
                 <li class="nav-item">
                     <a href="/login" class="nav-link">Login</a>
                 </li>
                 <li class="nav-item">
-                    <a href="/register" class="nav-link">Sign Up</a>
+                    <a href="/register" class="nav-link">Register</a>
+                </li>
+                <% } else { %>
+                <li class="nav-item">
+                    <a role="link" aria-disabled="true" class="nav-link"
+                        disabled><%= currentUser.username.toUpperCase() %></a>
                 </li>
                 <li class="nav-item">
                     <a href="/logout" class="nav-link">Logout</a>
                 </li>
+                <% } %>
             </ul>
         </div>
 
