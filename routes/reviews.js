@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router({ mergeParams: true });
 const catchAsync = require('../utilities/catchAsync') //Asynchronous Error Handler 
 const ExpressError = require('../utilities/ExpressError') //Express Error Class
-const { validateReview, isLoggedIn } = require('../middleware');
+const { validateReview, isLoggedIn, isReviewAuthor } = require('../middleware');
 const Campground = require('../models/campground');
 const Review = require('../models/review');
 
@@ -19,7 +19,7 @@ router.post('/', isLoggedIn, validateReview, catchAsync(async (req, res) => {
 }))
 
 /**DELETING REVIEWS */
-router.delete('/:review_id', catchAsync(async (req, res) => {
+router.delete('/:review_id', isLoggedIn, isReviewAuthor, catchAsync(async (req, res) => {
     const { id, review_id } = req.params;
     await Campground.findByIdAndUpdate(id, { $pull: { reviews: review_id } });
     await Review.findByIdAndDelete(review_id)
