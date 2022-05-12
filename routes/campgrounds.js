@@ -9,8 +9,12 @@ const upload = multer({ storage });
 
 router.route('/')
     .get(catchAsync(campgrounds.index))
-    .post(isLoggedIn, upload.array('image'), validateCampground, catchAsync(campgrounds.createCampground)); // multer gets everything and send us the parsed data before we validate 
-
+    .post(
+        isLoggedIn,
+        upload.array('image'),
+        validateCampground,
+        catchAsync(campgrounds.createCampground)
+    ); // multer gets everything and send us the parsed data before we validate 
 
 router.get('/new', isLoggedIn, campgrounds.renderNewForm); //new form
 
@@ -19,8 +23,8 @@ router.route('/:id')
     .put(
         isLoggedIn,
         isAuthor,
+        upload.array('image'),
         validateCampground,
-        isAuthor,
         catchAsync(campgrounds.updateCampground)
     )
     .delete(isLoggedIn, catchAsync(campgrounds.deleteCampground))
