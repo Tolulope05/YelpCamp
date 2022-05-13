@@ -7,6 +7,8 @@ const ImageSchema = new Schema({
     filename: String
 });
 
+const opts = { toJSON: { virtuals: true } };
+
 ImageSchema.virtual('thumbnail').get(function () {
     return this.url.replace('/upload', '/upload/w_200')
 }); // Image transformation virtuals from cloudinary integrated into mongoose
@@ -14,6 +16,17 @@ ImageSchema.virtual('thumbnail').get(function () {
 const CampgroundSchema = new Schema({
     title: String,
     images: [ImageSchema],
+    geometry: {
+        type: {
+            type: String,
+            enum: ['Point'],
+            required: true
+        },
+        coordinates: {
+            type: [Number],
+            required: true
+        }
+    },
     price: Number,
     description: String,
     author: {
@@ -26,8 +39,8 @@ const CampgroundSchema = new Schema({
             type: Schema.Types.ObjectId,
             ref: 'Review'
         }
-    ]
-});
+    ],
+}, opts);
 
 /**Campground Delete middleware */
 CampgroundSchema.post('findOneAndDelete', async function (doc) {

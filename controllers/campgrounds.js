@@ -18,15 +18,14 @@ module.exports.createCampground = async (req, res, next) => {
         query: req.body.campground.location,
         limit: 1
     }).send()
-    res.send(geoData.body.features[0].geometry.coordinates);
-    // res.send('ok')
-    // const campground = new Campground(req.body.campground);
-    // campground.images = req.files.map(file => ({ url: file.path, filename: file.filename }));
-    // campground.author = req.user._id;
-    // await campground.save();
-    // console.log(campground);
-    // req.flash('success', 'Successfully made a new Campground!')
-    // res.redirect(`/campgrounds/${campground._id}`);
+    const campground = new Campground(req.body.campground);
+    campground.geometry = geoData.body.features[0].geometry;
+    campground.images = req.files.map(file => ({ url: file.path, filename: file.filename }));
+    campground.author = req.user._id;
+    await campground.save();
+    console.log(campground);
+    req.flash('success', 'Successfully made a new Campground!');
+    res.redirect(`/campgrounds/${campground._id}`);
 };
 
 module.exports.showCampground = async (req, res) => {
@@ -37,6 +36,8 @@ module.exports.showCampground = async (req, res) => {
             path: 'author'
         }
     }).populate('author');
+    // const mapData = campground.geometry.coordinates;
+    // console.log(mapData)
     if (!campground) {
         req.flash('error', 'Ops...We cant find that Campground!')
         return res.redirect('/campgrounds')
