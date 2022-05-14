@@ -17,6 +17,8 @@ const passport = require('passport');
 const LocalStrategy = require('passport-local');
 const User = require('./models/user');
 
+const mongoSanitize = require('express-mongo-sanitize');
+
 /**ROUTES */
 const userRoutes = require('./routes/users');
 const campgroundRoutes = require('./routes/campgrounds');
@@ -43,6 +45,8 @@ app.set('view engine', 'ejs');
 app.use(express.urlencoded({ extended: true })); //for post request.
 app.use(methodOverride('_method'));
 app.use(express.static(path.join(__dirname, 'public'))) //For serving static files like the pure script files
+app.use(mongoSanitize());
+
 const sessionConfig = {
     secret: 'secretissecret',
     resave: false,
@@ -65,6 +69,7 @@ passport.serializeUser(User.serializeUser()); // How do we store the user in the
 passport.deserializeUser(User.deserializeUser()); // How do we get the user from the session
 
 app.use((req, res, next) => {
+    console.log(req.query);
     res.locals.currentUser = req.user;
     res.locals.success = req.flash('success');
     res.locals.error = req.flash('error');
