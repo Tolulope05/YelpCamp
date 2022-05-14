@@ -20,4 +20,4 @@ const marker = new mapboxgl.Marker({
                 `<h3>${parsedCamp.title}</h3> <p>${parsedCamp.description}</p>`
             )
     )
-    .marker()
+    // .marker()

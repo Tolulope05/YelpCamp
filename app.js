@@ -48,11 +48,13 @@ app.use(express.static(path.join(__dirname, 'public'))) //For serving static fil
 app.use(mongoSanitize());
 
 const sessionConfig = {
+    name: 'session',
     secret: 'secretissecret',
     resave: false,
     saveUninitialized: true,
     cookie: {
         HttpOnly: true,
+        // secure: true,
         expires: Date.now() + 1000 * 60 * 60 * 24 * 7,
         maxAge: 1000 * 60 * 60 * 24 * 7 // A week from now in milliseconds
     }
@@ -69,7 +71,6 @@ passport.serializeUser(User.serializeUser()); // How do we store the user in the
 passport.deserializeUser(User.deserializeUser()); // How do we get the user from the session
 
 app.use((req, res, next) => {
-    console.log(req.query);
     res.locals.currentUser = req.user;
     res.locals.success = req.flash('success');
     res.locals.error = req.flash('error');
