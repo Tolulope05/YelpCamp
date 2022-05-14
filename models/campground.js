@@ -42,6 +42,16 @@ const CampgroundSchema = new Schema({
     ],
 }, opts);
 
+CampgroundSchema.virtual('properties.popUpMarkup').get(function () {
+    return `${this._id}`;
+});
+CampgroundSchema.virtual('properties.popUpMarkup2').get(function () {
+    return `${this.title}`;
+});
+CampgroundSchema.virtual('properties.popUpMarkup3').get(function () {
+    return `<p>${this.description.substring(0, 20)}...</p>`;
+});
+
 /**Campground Delete middleware */
 CampgroundSchema.post('findOneAndDelete', async function (doc) {
     if (doc) {
